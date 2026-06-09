@@ -1,10 +1,12 @@
 import os
 import yaml
 
-from src.constants import CONFIG_FILE_PATH
-from src.constants import PARAMS_FILE_PATH
+from src.constants import CONFIG_FILE_PATH, PARAMS_FILE_PATH
 
-from src.entity.config_entity import DataIngestionConfig
+from src.entity.config_entity import (
+    DataIngestionConfig,
+    DataValidationConfig,
+)
 
 
 class ConfigurationManager:
@@ -12,7 +14,7 @@ class ConfigurationManager:
     def __init__(
         self,
         config_filepath=CONFIG_FILE_PATH,
-        params_filepath=PARAMS_FILE_PATH
+        params_filepath=PARAMS_FILE_PATH,
     ):
 
         with open(config_filepath) as config_file:
@@ -23,7 +25,7 @@ class ConfigurationManager:
 
         os.makedirs(
             self.config["artifacts_root"],
-            exist_ok=True
+            exist_ok=True,
         )
 
     def get_data_ingestion_config(self):
@@ -32,13 +34,29 @@ class ConfigurationManager:
 
         os.makedirs(
             config["root_dir"],
-            exist_ok=True
+            exist_ok=True,
         )
 
-        data_ingestion_config = DataIngestionConfig(
+        return DataIngestionConfig(
+            root_dir=config["root_dir"],
+            source_URL=config["source_URL"],
+            local_data_file=config["local_data_file"],
             train_data_path=config["train_data_path"],
             test_data_path=config["test_data_path"],
-            raw_data_path=config["raw_data_path"]
+            raw_data_path=config["raw_data_path"],
         )
 
-        return data_ingestion_config
+    def get_data_validation_config(self):
+
+        config = self.config["data_validation"]
+
+        os.makedirs(
+            config["root_dir"],
+            exist_ok=True,
+        )
+
+        return DataValidationConfig(
+            root_dir=config["root_dir"],
+            status_file=config["status_file"],
+            train_data_path=config["train_data_path"],
+        )
