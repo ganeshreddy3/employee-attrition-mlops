@@ -6,6 +6,7 @@ from src.constants import CONFIG_FILE_PATH, PARAMS_FILE_PATH
 from src.entity.config_entity import (
     DataIngestionConfig,
     DataValidationConfig,
+    DataTransformationConfig,
 )
 
 
@@ -59,4 +60,22 @@ class ConfigurationManager:
             root_dir=config["root_dir"],
             status_file=config["status_file"],
             train_data_path=config["train_data_path"],
+        )
+
+    def get_data_transformation_config(self):
+
+        config = self.config["data_transformation"]
+
+        os.makedirs(
+            config["root_dir"],
+            exist_ok=True,
+        )
+
+        return DataTransformationConfig(
+            root_dir=config["root_dir"],
+            train_data_path=config["train_data_path"],
+            test_data_path=config["test_data_path"],
+            preprocessor_obj_file_path=config[
+                "preprocessor_obj_file_path"
+            ],
         )
